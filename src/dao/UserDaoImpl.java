@@ -30,12 +30,36 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
+	public boolean checkusername(String name) {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+			    DBconn.init();
+				try {
+				ResultSet rs = DBconn.selectSql("select * from login_info where username='"+name+"'");
+				if(rs!=null)
+				{
+					while(rs.next()){
+					if(name.equals(rs.getString("username")))
+							{
+						     flag = true;
+							}		
+					}
+				}
+				DBconn.closeConn();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+		return flag;
+	}
+    
+	@Override
 	public boolean register(User user) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		DBconn.init();
-		int i =DBconn.addUpdDel("insert into login_info(name,pwd) " +
-				"values('"+user.getName()+"','"+user.getPwd()+"')");
+		int i =DBconn.addUpdDel("insert into login_info(username,password,userphoto) " +
+				"values('"+user.getName()+"','"+user.getPwd()+"','"+user.getPhoto()+"')");
 		if(i>0){
 			flag = true;
 		}
@@ -44,17 +68,27 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<User> getUserAll() {
+	public List<User> getUserAll(String username) {
 		// TODO Auto-generated method stub
 		List<User> list = new ArrayList<User>();
     	try {
 		    DBconn.init();
-			ResultSet rs = DBconn.selectSql("select * from login_info");
+			ResultSet rs ;
+		    if(username!=null&&!"".equals(username))
+		    {
+		    	 rs = DBconn.selectSql("select * from login_info where username = '"+username+"'");
+		    }
+		    else
+		    {
+		    	 rs = DBconn.selectSql("select * from login_info");
+		    }
+	
 			while(rs.next()){
 				User user = new User();
-				user.setId(rs.getInt("id"));
-				user.setName(rs.getString("name"));
-				user.setPwd(rs.getString("pwd"));
+				user.setId(rs.getInt("userid"));
+				user.setName(rs.getString("username"));
+				user.setPwd(rs.getString("password"));
+				user.setPhoto(rs.getString("userphoto"));
 				list.add(user);
 			}
 			DBconn.closeConn();
@@ -70,7 +104,7 @@ public class UserDaoImpl implements UserDao {
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		DBconn.init();
-		String sql = "delete  from login_info where id="+id;
+		String sql = "delete  from login_info where userid="+id;
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
@@ -86,7 +120,7 @@ public class UserDaoImpl implements UserDao {
 		DBconn.init();
 		String sql ="update login_info set username ='"+name
 				+"' , password ='"+pwd
-				+"' where id = "+id;
+				+"' where userid = "+id;
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
@@ -94,5 +128,5 @@ public class UserDaoImpl implements UserDao {
 		DBconn.closeConn();
 		return flag;
 	}
-    
+
 }

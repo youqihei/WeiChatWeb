@@ -3,6 +3,7 @@ package entity;
 public class User {
 	 private int id;
 	    private String name;
+	    private String photo;
 	    private String pwd;
 		public int getId() {
 			return id;
@@ -22,5 +23,12 @@ public class User {
 		public void setPwd(String pwd) {
 			this.pwd = pwd;
 		}
+		public String getPhoto() {
+			return photo;
+		}
+		public void setPhoto(String photo) {
+			this.photo = photo;
+		}
+		
        
 }

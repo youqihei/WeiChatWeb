@@ -9,8 +9,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.google.gson.Gson;
+
 import dao.UserDao;
 import dao.UserDaoImpl;
+import entity.BaseResponse;
+import entity.LoginResponse;
+import net.sf.json.JSONObject;
 
 /**
  * Servlet implementation class LoginCheck
@@ -36,11 +41,23 @@ public class LoginCheck extends HttpServlet {
        String name = request.getParameter("name");
        String pwd = request.getParameter("pwd");
 		  UserDao ud = new UserDaoImpl();
+		  LoginResponse loginresponse = new LoginResponse("omoenenmgfe");
+		  BaseResponse<LoginResponse> baseresponse = new BaseResponse<>();
+		  baseresponse.setData(loginresponse);
+		
 		  if(ud.login(name, pwd)){
-			  System.out.println("sineeee");
+			  baseresponse.setStatus("0");
+			  baseresponse.setMessage("µÇÂ¼³É¹¦");
+			  System.out.println("µÇÂ¼³É¹¦");
 			}else{
-				  System.out.println("sineeee2");
+				  baseresponse.setStatus("1");
+				  baseresponse.setMessage("µÇÂ¼Ê§°Ü");
+				  System.out.println("µÇÂ¼Ê§°Ü");
 			}
+		  Gson gson = new Gson();
+		  String strJson = gson.toJson(baseresponse);
+		  response.setContentType("application/json;charset=utf-8");
+		  response.getWriter().print(strJson);
 	}
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	  
