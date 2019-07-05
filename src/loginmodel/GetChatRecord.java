@@ -50,7 +50,7 @@ public class GetChatRecord extends HttpServlet {
 			  ChatRecordResponse chatRecordResponse = new ChatRecordResponse();
 			  List<ChatRecordResponse.Group> grouplist = new ArrayList<>();
 			  //获取某用户的所有群聊天名称
-			   List<GroupNameTable> groupNameTables = ud.getGroupIdNames("select * from gnametable where usernname = '"+username+"'");
+			   List<GroupNameTable> groupNameTables = ud.getGroupIdNames("select * from gnametable where username = '"+username+"'");
 			   for(int i=0;i<groupNameTables.size();i++)
 			   {
 				   //添加某用户某一个群的所有聊天记录
@@ -81,11 +81,11 @@ public class GetChatRecord extends HttpServlet {
 			  
 			  List<ChatRecordResponse.User> userlist = new ArrayList<>();
 			  //获取某用户的所有好友列表
-			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where usernname = '"+username+"'");
+			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where username = '"+username+"'");
 			   //添加某好友的所有聊天记录
 			   for(int i=0;i<friendNameTables.size();i++)
 			   {
-				   String sql = "select * from fnametable where (usernname = '"+username+"'" + "and friendname = '"+friendNameTables.get(i).getFriendname()+"')"
+				   String sql = "select * from precordtable where (username = '"+username+"'" + "and friendname = '"+friendNameTables.get(i).getFriendname()+"')"
 			         +" or (username = '"+friendNameTables.get(i).getFriendname()+"'"+" and friendname = '"+username+"') order by timestamp";
 					   List<PersonRecordTable> tempo = ud.getPersonRecords(sql);
 					   List<String> content = new ArrayList<>();
