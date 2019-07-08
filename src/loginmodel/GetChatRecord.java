@@ -82,6 +82,7 @@ public class GetChatRecord extends HttpServlet {
 			  List<ChatRecordResponse.User> userlist = new ArrayList<>();
 			  //获取某用户的所有好友列表
 			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where username = '"+username+"'");
+			   System.out.println("朋友个数"+friendNameTables.size());
 			   //添加某好友的所有聊天记录
 			   for(int i=0;i<friendNameTables.size();i++)
 			   {

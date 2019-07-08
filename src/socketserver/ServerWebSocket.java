@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import dao.ChatRecordDaoImpl;
 import dao.UserDaoImpl;
+import entity.ChatFriendMessage;
 import entity.GroupNameTable;
 import entity.GroupRecordTable;
 import entity.PersonRecordTable;
@@ -60,11 +61,12 @@ public class ServerWebSocket  {
 	    	   JSONObject json = new JSONObject(message);
 	    	   if("group".equals(json.getString("require")))
 	    	   {
-	    		   sendMessageGroup(json.getString("username"),json.getString("groupname"),json.getString("content")); 
+	    		   sendMessageGroup(json.getString("friendname"),json.getString("groupname"),json.getString("content")); 
 	    	   }
 	    	   else
 	    	   {
-	    		   sendMessageUser(json.getString("username"),json.getString("content")); 
+	    		
+	    		   sendMessageFriend(json.getString("friendname"),json.getString("content")); 
 	    	   }
 	        session.getBasicRemote().sendText("收到消息 "); //回复用户
 	    }
@@ -111,11 +113,11 @@ public class ServerWebSocket  {
         
 	    }  
 	    //收发某个好友的消息
-	    public void sendMessageUser(String username,String content) throws IOException {  
-	        	if(clients.containsKey(username))
+	    public void sendMessageFriend(String friendname,String content) throws IOException {  
+	        	if(clients.containsKey(friendname))
 	        	{
 	        		PersonRecordTable personRecordTable = new PersonRecordTable();
-	        		User friend = userDaoImpl.getUserAll(username).get(0);
+	        		User friend = userDaoImpl.getUserAll(friendname).get(0);
 	        		User current = userDaoImpl.getUserAll(this.username).get(0);
 	        		personRecordTable.setUser_id(current.getId()+"");
 	        		personRecordTable.setUsername(current.getName());
@@ -124,9 +126,17 @@ public class ServerWebSocket  {
 	        		personRecordTable.setFriend_name(friend.getName());
 	        		personRecordTable.setFriend_photo(friend.getPhoto());
 	        		personRecordTable.setContent(content);
+	        		personRecordTable.setTimestamp(System.currentTimeMillis()+"");
 	        		chatRecordDaoImpl.addPersonRecord(personRecordTable);
-	        		JSONObject jsonObject = new JSONObject(personRecordTable);
-	        	    clients.get(username).getBasicRemote().sendText(jsonObject.toString());
+	        		ChatFriendMessage chatFriendMessage = new ChatFriendMessage();
+	        		chatFriendMessage.setImv("");
+	        		chatFriendMessage.setMessage(content);
+	        		chatFriendMessage.setMessage_id(current.getId()+"");
+	        		chatFriendMessage.setMine(false);
+	        		chatFriendMessage.setTitle(current.getName());
+	        		JSONObject jsonObject = new JSONObject(chatFriendMessage);
+	        		   System.out.println("发送回客户端"+jsonObject.toString());
+	        	    clients.get(friendname).getBasicRemote().sendText(jsonObject.toString());
 	        	}
 	        	else
 	        	{

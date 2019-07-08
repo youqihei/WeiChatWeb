@@ -16,6 +16,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 
 	@Override
 	public boolean addPersonRecord(PersonRecordTable user) {
+		DBconn.init();
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		int i =DBconn.addUpdDel("insert into precordtable(userid,username,userphoto,friendid,friendname,friendphoto,issend,content,timestamp) " +
@@ -24,6 +25,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	}
 
