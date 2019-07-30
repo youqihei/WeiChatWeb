@@ -74,7 +74,7 @@ public class ServerWebSocket  {
 	    public void sendMessageGroup(String username,String groupname,String  content) throws IOException {  
 	        // session.getBasicRemote().sendText(message);  
 	        //session.getAsyncRemote().sendText(message);  
-	      	GroupNameTable groupNameTable = chatRecordDaoImpl.getGroupIdNames("select * from gnametable where groupname = '"+groupname+"' and username ='"+username+"'").get(0);
+	      	GroupNameTable groupNameTable = chatRecordDaoImpl.getGroupMembers("select * from groupmember where groupname = '"+groupname+"' and username ='"+username+"'").get(0);
 	    	//添加到数据库
 	    	GroupRecordTable  grouprecordtable = new GroupRecordTable();
 	    	if(!groupname.equals(""))
@@ -92,7 +92,7 @@ public class ServerWebSocket  {
         		}
         	}
 	    	//群发给群里的人
-	    	List<GroupNameTable> current = chatRecordDaoImpl.getGroupIdNames("select * from gnametable where groupname = '"+groupname+"'");
+	    	List<GroupNameTable> current = chatRecordDaoImpl.getGroupMembers("select * from groupmember where groupname = '"+groupname+"'");
 	    	if(current!=null&&current.size()>0)
 	    	{
         		grouprecordtable.setContent(content);

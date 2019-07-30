@@ -2,6 +2,7 @@ package loginmodel;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,6 +15,7 @@ import com.google.gson.Gson;
 import dao.UserDao;
 import dao.UserDaoImpl;
 import entity.BaseResponse;
+import entity.ChatRecordResponse.User;
 import entity.LoginResponse;
 import net.sf.json.JSONObject;
 
@@ -41,7 +43,12 @@ public class LoginCheck extends HttpServlet {
        String name = request.getParameter("name");
        String pwd = request.getParameter("pwd");
 		  UserDao ud = new UserDaoImpl();
+		  List<entity.User> list = ud.getUserAll(name);
 		  LoginResponse loginresponse = new LoginResponse("omoenenmgfe");
+		  loginresponse.setUserid(list.get(0).getId()+"");
+		  loginresponse.setUsername(name);
+		  loginresponse.setUserphoto(list.get(0).getPhoto());
+		  loginresponse.setPassword(pwd);
 		  BaseResponse<LoginResponse> baseresponse = new BaseResponse<>();
 		  baseresponse.setData(loginresponse);
 		

@@ -2,6 +2,7 @@ package loginmodel;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -44,6 +45,11 @@ public class Register extends HttpServlet {
 	       String photo = request.getParameter("photo");
 			  UserDao ud = new UserDaoImpl();
 			  LoginResponse loginresponse = new LoginResponse("omoenenmgfe");
+			  List<entity.User> list = ud.getUserAll(name);
+			  loginresponse.setUserid(list.get(0).getId()+"");
+			  loginresponse.setUsername(name);
+			  loginresponse.setUserphoto(list.get(0).getPhoto());
+			  loginresponse.setPassword(pwd);
 			  BaseResponse<LoginResponse> baseresponse = new BaseResponse<>();
 			  baseresponse.setData(loginresponse);
 			  System.out.println(name);

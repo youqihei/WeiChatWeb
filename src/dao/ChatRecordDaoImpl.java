@@ -31,13 +31,16 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 
 	@Override
 	public boolean deletePersonRecord(String sql) {
+		DBconn.init();
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
+		
 	}
 
 	@Override
@@ -45,6 +48,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 		// TODO Auto-generated method stub
 		List<PersonRecordTable> list = new ArrayList<PersonRecordTable>();
     	try {
+    	    DBconn.init();
 			ResultSet rs;
 			 rs = DBconn.selectSql(sql);
 			while(rs.next()){
@@ -59,6 +63,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
                 personRecordTable.setContent(rs.getString("content"));
 				list.add(personRecordTable);
 			}
+			DBconn.closeConn();
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -85,10 +90,12 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 	public boolean deleteFriendIdName(String sql) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
+		DBconn.init();
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	}
 
@@ -97,6 +104,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 		// TODO Auto-generated method stub
 		List<FriendNameTable> list = new ArrayList<FriendNameTable>();
     	try {
+    		DBconn.init();
 			ResultSet rs;
 		  	rs = DBconn.selectSql(sql);	
 			while(rs.next()){
@@ -109,6 +117,7 @@ public class ChatRecordDaoImpl implements ChatRecordDao{
 				friendNameTable.setFriendphoto(rs.getString("friendphoto"));
 				list.add(friendNameTable);
 			}
+			DBconn.closeConn();
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -140,34 +149,39 @@ return flag;
 }
 	
 	@Override
-	public boolean addGroupIdName(GroupNameTable user) {
+	public boolean addGroupMember(GroupNameTable user) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
-		int i =DBconn.addUpdDel("insert into gnametable(userid,username,userphoto,groupid,groupname,groupphoto) " +
+		 DBconn.init();
+		int i =DBconn.addUpdDel("insert into groupmember(userid,username,userphoto,groupid,groupname,groupphoto) " +
 				"values('"+user.getUser_id()+"','"+user.getUsername()+"','"+user.getUserphoto()+"','"+user.getGroup_id()+"','"+user.getGroupname()+
 				"','"+user.getGroupphoto()+"')");
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	}
 	@Override
-	public boolean deleteGroupIdName(String sql) {
+	public boolean deleteGroupMember(String sql) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
+		 DBconn.init();
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	} 
 	
 
 	@Override
-	public List<GroupNameTable> getGroupIdNames(String sql) {
+	public List<GroupNameTable> getGroupMembers(String sql) {
 		// TODO Auto-generated method stub
 		List<GroupNameTable> list = new ArrayList<GroupNameTable>();
     	try {
+    		 DBconn.init();
 			ResultSet rs;
 		  	rs = DBconn.selectSql(sql);	
 			while(rs.next()){
@@ -180,6 +194,7 @@ return flag;
 				groupNameTable.setGroupphoto(rs.getString("groupphoto"));
 				list.add(groupNameTable);
 			}
+			DBconn.closeConn();
 			return list;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -187,20 +202,99 @@ return flag;
 		return null;
 	}
 	@Override
-	public boolean isSomeGroup(String sql,String groupname) {
+	public boolean isGroupMember(String sql,String username) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
+		 DBconn.init();
 		try {
 		ResultSet rs = DBconn.selectSql(sql);
 		if(rs!=null)
 		{
 			while(rs.next()){
-			if(groupname.equals(rs.getString("groupname")))
+			if(username.equals(rs.getString("username")))
 					{
 				     flag = true;
 					}		
 			}
 		}
+		DBconn.closeConn();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+     return flag;
+	}
+	@Override
+	public boolean addGroupMaster(GroupNameTable user) {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		 DBconn.init();
+		int i =DBconn.addUpdDel("insert into gnametable(userid,username,userphoto,groupid,groupname,groupphoto) " +
+				"values('"+user.getUser_id()+"','"+user.getUsername()+"','"+user.getUserphoto()+"','"+user.getGroup_id()+"','"+user.getGroupname()+
+				"','"+user.getGroupphoto()+"')");
+		if(i>0){
+			flag = true;
+		}
+		DBconn.closeConn();
+		return flag;
+	}
+
+	@Override
+	public boolean deleteGroupMaster(String sql) {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		 DBconn.init();
+		int i =DBconn.addUpdDel(sql);
+		if(i>0){
+			flag = true;
+		}
+		DBconn.closeConn();
+		return flag;
+	}
+
+	@Override
+	public List<GroupNameTable> getGroupMaster(String sql) {
+		// TODO Auto-generated method stub
+		List<GroupNameTable> list = new ArrayList<GroupNameTable>();
+    	try {
+    		 DBconn.init();
+			ResultSet rs;
+		  	rs = DBconn.selectSql(sql);	
+			while(rs.next()){
+				GroupNameTable groupNameTable = new GroupNameTable();
+				groupNameTable.setUser_id(rs.getString("userid"));
+				groupNameTable.setUsername(rs.getString("username"));
+				groupNameTable.setUserphoto(rs.getString("userphoto"));
+				groupNameTable.setGroup_id(rs.getString("groupid"));
+				groupNameTable.setGroupname(rs.getString("groupname"));
+				groupNameTable.setGroupphoto(rs.getString("groupphoto"));
+				list.add(groupNameTable);
+			}
+			DBconn.closeConn();
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	@Override
+	public boolean isGroupMaster(String sql, String username) {
+		// TODO Auto-generated method stub
+		boolean flag = false;
+		try {
+			 DBconn.init();
+		ResultSet rs = DBconn.selectSql(sql);
+		if(rs!=null)
+		{
+			while(rs.next()){
+			if(username.equals(rs.getString("username")))
+					{
+				     flag = true;
+					}		
+			}
+		}
+		DBconn.closeConn();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -208,28 +302,31 @@ return flag;
      return flag;
 	}
 	
-	
 	@Override
 	public boolean addGroupRecord(GroupRecordTable user) {
 		// TODO Auto-generated method stub
 		boolean flag = false;
+		 DBconn.init();
 		int i =DBconn.addUpdDel("insert into grecordtable(groupid,groupname,groupphoto,userid,username,userphoto,content) " +
 				"values('"+user.getGroupid()+"','"+user.getGroupname()+"','"+user.getGroupphoto()+"','"+user.getUserid()+"','"+user.getUsername()+
 				"','"+user.getUserphoto()+"','"+user.getContent()+"')");
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	}
 
 	@Override
 	public boolean deleteGroupRecord(String sql) {
 		// TODO Auto-generated method stub
-		boolean flag = false;
+		boolean flag = false;	
+		DBconn.init();
 		int i =DBconn.addUpdDel(sql);
 		if(i>0){
 			flag = true;
 		}
+		DBconn.closeConn();
 		return flag;
 	}
 
@@ -239,6 +336,7 @@ return flag;
 		// TODO Auto-generated method stub
 		List<GroupRecordTable> list = new ArrayList<GroupRecordTable>();
     	try {
+    		 DBconn.init();
 			ResultSet rs;
 		  	rs = DBconn.selectSql(sql);	
 			while(rs.next()){
@@ -259,6 +357,8 @@ return flag;
 		}
 		return null;
 	}
+
+
 	
 
 }

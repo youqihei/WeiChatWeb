@@ -44,13 +44,13 @@ public class GetChatRecord extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		DBconn.init();
+
 	       String username = request.getParameter("name");
 			  ChatRecordDaoImpl ud = new ChatRecordDaoImpl();
 			  ChatRecordResponse chatRecordResponse = new ChatRecordResponse();
 			  List<ChatRecordResponse.Group> grouplist = new ArrayList<>();
 			  //获取某用户的所有群聊天名称
-			   List<GroupNameTable> groupNameTables = ud.getGroupIdNames("select * from gnametable where username = '"+username+"'");
+			   List<GroupNameTable> groupNameTables = ud.getGroupMembers("select * from groupmember where username = '"+username+"'");
 			   for(int i=0;i<groupNameTables.size();i++)
 			   {
 				   //添加某用户某一个群的所有聊天记录
@@ -78,7 +78,6 @@ public class GetChatRecord extends HttpServlet {
 					   group.setGroupphoto(groupNameTables.get(i).getGroupphoto());
 					   grouplist.add(group);        
 			   }
-			  
 			  List<ChatRecordResponse.User> userlist = new ArrayList<>();
 			  //获取某用户的所有好友列表
 			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where username = '"+username+"'");
@@ -114,7 +113,7 @@ public class GetChatRecord extends HttpServlet {
 			  String strJson = gson.toJson(baseresponse);
 			  response.setContentType("application/json;charset=utf-8");
 			  response.getWriter().print(strJson);
-				DBconn.closeConn();
+	
 	}
 
 	/**
