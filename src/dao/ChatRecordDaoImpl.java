@@ -307,9 +307,9 @@ return flag;
 		// TODO Auto-generated method stub
 		boolean flag = false;
 		 DBconn.init();
-		int i =DBconn.addUpdDel("insert into grecordtable(groupid,groupname,groupphoto,userid,username,userphoto,content) " +
+		int i =DBconn.addUpdDel("insert into grecordtable(groupid,groupname,groupphoto,userid,username,userphoto,content,timestamp) " +
 				"values('"+user.getGroupid()+"','"+user.getGroupname()+"','"+user.getGroupphoto()+"','"+user.getUserid()+"','"+user.getUsername()+
-				"','"+user.getUserphoto()+"','"+user.getContent()+"')");
+				"','"+user.getUserphoto()+"','"+user.getContent()+"','"+user.getTimestamp()+"')");
 		if(i>0){
 			flag = true;
 		}

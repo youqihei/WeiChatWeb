@@ -8,6 +8,14 @@ public class GroupRecordTable {
     private String username;
     private String userphoto;
     private String content;
+    private String timestamp;
+    
+	public String getTimestamp() {
+		return timestamp;
+	}
+	public void setTimestamp(String timestamp) {
+		this.timestamp = timestamp;
+	}
 	public String getGroupid() {
 		return groupid;
 	}

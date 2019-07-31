@@ -15,27 +15,21 @@ import com.google.gson.Gson;
 import dao.ChatRecordDaoImpl;
 import entity.BaseResponse;
 import entity.ChatFriendMessage;
-import entity.ChatRecordResponse;
-import entity.FriendNameTable;
-import entity.GroupNameTable;
+import entity.ChatGroupMessage;
 import entity.GroupRecordTable;
 import entity.PersonRecordTable;
-import entity.ChatRecordResponse.Group;
-import entity.ChatRecordResponse.User;
-import entity.ChatRecordResponse.Group.GroupContent;
-import util.DBconn;
 
 /**
- * Servlet implementation class ChatFriendMes
+ * Servlet implementation class ChatGroupMes
  */
-@WebServlet("/ChatFriendMes")
-public class ChatFriendMes extends HttpServlet {
+@WebServlet("/ChatGroupMes")
+public class ChatGroupMes extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public ChatFriendMes() {
+    public ChatGroupMes() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -45,46 +39,48 @@ public class ChatFriendMes extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-	       String userid = request.getParameter("userid");
-	       String friendid = request.getParameter("friendid");
+	      String userid = request.getParameter("userid");
+	       String groupid = request.getParameter("groupid");
 		   System.out.println("username"+userid);
-		   System.out.println("friendname"+friendid);
+		   System.out.println("friendname"+groupid);
 			  ChatRecordDaoImpl ud = new ChatRecordDaoImpl();
-			  List<ChatFriendMessage> chatFriendMessage = new ArrayList<>();
+			  List<ChatGroupMessage> chatgroupMessage = new ArrayList<>();
 			  
-			   //添加某好友的所有聊天记录
-				   String sql = "select * from precordtable where (userid = '"+userid+"'" + "and friendid = '"+friendid+"')"
-			         +" or (userid = '"+friendid+"'"+" and friendid = '"+userid+"') order by timestamp";
-					   List<PersonRecordTable> tempo = ud.getPersonRecords(sql);
-					   System.out.println(tempo.size());
+			   //添加用户某个群的所有聊天记录
+			  if(userid!=null)
+			  {
+				   String sql = "select * from grecordtable where ( groupid = '"+groupid+"') order by timestamp";
+					   List<GroupRecordTable> tempo = ud.getGroupRecords(sql);
+				if(tempo!=null)
+				{
 					   for(int j=0;j<tempo.size();j++)
 					   {
-						   ChatFriendMessage user = new ChatFriendMessage();
+						   ChatGroupMessage user = new  ChatGroupMessage();
 						   user.setMessage((tempo.get(j).getContent()));
-						   if(tempo.get(j).getUser_id().equals(userid))
-						   {
-						   user.setMessage_id(tempo.get(j).getUser_id());
+						   user.setMessage_id(tempo.get(j).getUserid());
 						   user.setTitle(tempo.get(j).getUsername());
+						   user.setImv(tempo.get(j).getUserphoto());
+						   user.setGroupid(groupid);
+						   if(tempo.get(j).getUserid().equals(userid))
+						   {
 						   user.setMine(true);
-						   user.setImv(tempo.get(j).getUser_photo());
 						   }
 						   else {
-							   user.setMessage_id(tempo.get(j).getFriend_id());
-							   user.setTitle(tempo.get(j).getFriend_name());
 							   user.setMine(false);
-							   user.setImv(tempo.get(j).getFriend_photo());
 						   }
-						   chatFriendMessage.add(user);  
+						   chatgroupMessage.add(user);  
 					   }
 					      
-			  BaseResponse<List<ChatFriendMessage>> baseresponse = new BaseResponse<>();
+			  BaseResponse<List<ChatGroupMessage>> baseresponse = new BaseResponse<>();
 			  baseresponse.setStatus("0");
 			  baseresponse.setMessage("获取成功");
-			  baseresponse.setData(chatFriendMessage);
+			  baseresponse.setData(chatgroupMessage);
 			  Gson gson = new Gson();
 			  String strJson = gson.toJson(baseresponse);
 			  response.setContentType("application/json;charset=utf-8");
 			  response.getWriter().print(strJson);
+				}
+			  }
 	}
 
 	/**

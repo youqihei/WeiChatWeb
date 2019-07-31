@@ -68,15 +68,15 @@ public class UserDaoImpl implements UserDao {
 	}
 
 	@Override
-	public List<User> getUserAll(String username) {
+	public List<User> getUserAll(String userid) {
 		// TODO Auto-generated method stub
 		List<User> list = new ArrayList<User>();
     	try {
 		    DBconn.init();
 			ResultSet rs ;
-		    if(username!=null&&!"".equals(username))
+		    if(userid!=null&&!"".equals(userid))
 		    {
-		    	 rs = DBconn.selectSql("select * from login_info where username = '"+username+"'");
+		    	 rs = DBconn.selectSql("select * from login_info where userid = '"+userid+"'");
 		    }
 		    else
 		    {
@@ -98,7 +98,37 @@ public class UserDaoImpl implements UserDao {
 		}
 		return null;
 	}
-
+	@Override
+	public List<User> getUserAllByname(String userid) {
+		// TODO Auto-generated method stub
+		List<User> list = new ArrayList<User>();
+    	try {
+		    DBconn.init();
+			ResultSet rs ;
+		    if(userid!=null&&!"".equals(userid))
+		    {
+		    	 rs = DBconn.selectSql("select * from login_info where username = '"+userid+"'");
+		    }
+		    else
+		    {
+		    	 rs = DBconn.selectSql("select * from login_info");
+		    }
+	
+			while(rs.next()){
+				User user = new User();
+				user.setId(rs.getInt("userid"));
+				user.setName(rs.getString("username"));
+				user.setPwd(rs.getString("password"));
+				user.setPhoto(rs.getString("userphoto"));
+				list.add(user);
+			}
+			DBconn.closeConn();
+			return list;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	@Override
 	public boolean delete(int id) {
 		// TODO Auto-generated method stub

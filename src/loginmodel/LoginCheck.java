@@ -43,7 +43,7 @@ public class LoginCheck extends HttpServlet {
        String name = request.getParameter("name");
        String pwd = request.getParameter("pwd");
 		  UserDao ud = new UserDaoImpl();
-		  List<entity.User> list = ud.getUserAll(name);
+		  List<entity.User> list = ud.getUserAllByname(name);
 		  LoginResponse loginresponse = new LoginResponse("omoenenmgfe");
 		  loginresponse.setUserid(list.get(0).getId()+"");
 		  loginresponse.setUsername(name);

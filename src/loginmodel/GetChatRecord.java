@@ -45,16 +45,16 @@ public class GetChatRecord extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 
-	       String username = request.getParameter("name");
+	       String userid = request.getParameter("userid");
 			  ChatRecordDaoImpl ud = new ChatRecordDaoImpl();
 			  ChatRecordResponse chatRecordResponse = new ChatRecordResponse();
 			  List<ChatRecordResponse.Group> grouplist = new ArrayList<>();
 			  //获取某用户的所有群聊天名称
-			   List<GroupNameTable> groupNameTables = ud.getGroupMembers("select * from groupmember where username = '"+username+"'");
+			   List<GroupNameTable> groupNameTables = ud.getGroupMembers("select * from groupmember where userid = '"+userid+"'");
 			   for(int i=0;i<groupNameTables.size();i++)
 			   {
 				   //添加某用户某一个群的所有聊天记录
-					   List<GroupRecordTable> tempo = ud.getGroupRecords("select * from grecordtable where groupname = '"+ groupNameTables.get(i)+"'");
+					   List<GroupRecordTable> tempo = ud.getGroupRecords("select * from grecordtable where groupid = '"+ groupNameTables.get(i).getGroup_id()+"'");
 					   List<String> userids = new ArrayList<>();
 					   List<String> usernames  = new ArrayList<>();
 					   List<String> userphotos = new ArrayList<>();
@@ -80,21 +80,24 @@ public class GetChatRecord extends HttpServlet {
 			   }
 			  List<ChatRecordResponse.User> userlist = new ArrayList<>();
 			  //获取某用户的所有好友列表
-			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where username = '"+username+"'");
-			   System.out.println("朋友个数"+friendNameTables.size());
+			   List<FriendNameTable> friendNameTables = ud.getFriendNameTalbe("select * from fnametable where userid = '"+userid+"'");
 			   //添加某好友的所有聊天记录
+			   if(friendNameTables!=null)
+			   {
 			   for(int i=0;i<friendNameTables.size();i++)
 			   {
-				   String sql = "select * from precordtable where (username = '"+username+"'" + "and friendname = '"+friendNameTables.get(i).getFriendname()+"')"
-			         +" or (username = '"+friendNameTables.get(i).getFriendname()+"'"+" and friendname = '"+username+"') order by timestamp";
+				   String sql = "select * from precordtable where (userid = '"+userid+"'" + "and friendid = '"+friendNameTables.get(i).getFriend_id()+"')"
+			         +" or (userid = '"+friendNameTables.get(i).getFriend_id()+"'"+" and friendid = '"+userid+"') order by timestamp";
 					   List<PersonRecordTable> tempo = ud.getPersonRecords(sql);
+					 
 					   List<String> content = new ArrayList<>();
-					   System.out.println(tempo.size());
+					   if(tempo!=null)
+					   {
 					   for(int j=0;j<tempo.size();j++)
 					   {
 						   content.add(tempo.get(j).getContent());
-						   System.out.println(tempo.get(j).getContent());
 					   }
+			         }
 					   ChatRecordResponse.User user = new ChatRecordResponse().new User();
 					   user.setUsercontent(content);
 					   user.setUserid(friendNameTables.get(i).getFriend_id());
@@ -113,6 +116,7 @@ public class GetChatRecord extends HttpServlet {
 			  String strJson = gson.toJson(baseresponse);
 			  response.setContentType("application/json;charset=utf-8");
 			  response.getWriter().print(strJson);
+			   }
 	
 	}
 
